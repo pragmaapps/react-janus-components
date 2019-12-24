@@ -28,7 +28,7 @@ const JanusStreamPlayer = React.forwardRef((
                     <span style={{color:"red"}}>Error</span>
                 )}
             </div>
-            <Player playsInline autoPlay ref={ref} >
+            <Player playsInline autoPlay ref={ref}>
                 <ControlBar disableCompletely={true} />
             </Player>
             {isPublisher && (

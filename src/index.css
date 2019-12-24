@@ -11,7 +11,9 @@ body{
   background-color: #000;
   width: 100%;
 }
-
+.janus-video-container .video-react.video-react-fluid {
+  padding-top: 62.5% !important
+}
 .janus-video-player{
   width: 100%;
   height: 300px;

@@ -4,9 +4,11 @@ import Janus from './utils/janus';
 import { subscribeStreaming, startStream } from './utils/streaming';
 import JanusStreamPlayer from './JanusStreamPlayer';
 
-
-const JanusStreamer = ({ janus, opaqueId, streamId }) => {
-    const videoArea = useRef(null);
+const JanusStreamer = React.forwardRef((
+    { 
+        janus, opaqueId, streamId
+    }, ref ) => {
+    const videoArea = ref;
     const [playerState, setPlayerState] = useState("Ready");
     const [streaming, setStreaming] = useState(null);
     const [list, setList] = useState(null);
@@ -47,7 +49,7 @@ const JanusStreamer = ({ janus, opaqueId, streamId }) => {
     }, [janus])
 
     return (
-        
+
         <div>
             <JanusStreamPlayer 
                 ref={videoArea}
@@ -56,6 +58,6 @@ const JanusStreamer = ({ janus, opaqueId, streamId }) => {
             />
         </div>
     )
-};
+});
 
 export default JanusStreamer;
