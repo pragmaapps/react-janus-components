@@ -10,11 +10,13 @@ const JanusStreamPlayer = React.forwardRef((
         onStop, 
         onMute, 
         onUnmute, 
-        onBandwidthChange 
+        onBandwidthChange,
+        enableCustomControl,
+        customVideoControls, 
     }, ref ) => {
     return (
         <div className="janus-video-container">
-            <div className="janus-video-status">
+            {/* <div className="janus-video-status">
                 {status === "Ready" && (
                     <span style={{color:"grey"}}>Ready</span>
                 )}
@@ -27,9 +29,27 @@ const JanusStreamPlayer = React.forwardRef((
                 {status === "Error" && (
                     <span style={{color:"red"}}>Error</span>
                 )}
-            </div>
+            </div> */}
             <Player playsInline autoPlay ref={ref}>
-                <ControlBar disableCompletely={true} />
+                {
+                    enableCustomControl ?
+                        (
+                            <ControlBar className="janus-control-bar-align-top">
+                                {customVideoControls}
+                                <VolumeMenuButton disabled />
+                                <DurationDisplay disabled />
+                                <ProgressControl disabled />
+                                <PlayToggle disabled />
+                                <TimeDivider disabled />
+                                <CurrentTimeDisplay disabled />
+                                <PlaybackRateMenuButton disabled />
+                                <ForwardControl disabled />
+                            </ControlBar>
+                        ) :
+                        (
+                            <ControlBar disableCompletely={true} />
+                        )
+                }
             </Player>
             {isPublisher && (
                 <div className="janus-video-controls">
