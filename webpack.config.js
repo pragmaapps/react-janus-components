@@ -3,11 +3,13 @@ var path = require('path');
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'lib'),
-    filename: 'index.js',
-    libraryTarget: 'commonjs2' 
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'react-janus-components.js',
+    library: 'reactJanusComponents',
+    libraryTarget: 'umd' 
   },
   module: {
+    noParse: /^(react|react-dom)$/i,
     rules: [
       {
         test: /\.js$/,
@@ -16,7 +18,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           query: {
-            presets: ["babel-preset-env"],
+            presets: ['babel-preset-env', 'babel-preset-react'],
           }
         },
       },
@@ -29,8 +31,9 @@ module.exports = {
       }
     ]
   },
-  externals: {
-    'react': 'commonjs react',
-    'react-dom': 'commonjs react-dom'
-  }
+  externals: [
+    'react',
+    'react-dom'
+  ]
+
 };
