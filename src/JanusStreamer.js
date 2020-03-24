@@ -6,7 +6,7 @@ import JanusStreamPlayer from './JanusStreamPlayer';
 
 const JanusStreamer = React.forwardRef((
     { 
-        janus, opaqueId, streamId, enableCustomControl, customVideoControls,
+        janus, opaqueId, streamId, enableCustomControl, customVideoControls, overlayImage,
     }, ref ) => {
     const videoArea = ref;
     const [playerState, setPlayerState] = useState("Ready");
@@ -57,6 +57,7 @@ const JanusStreamer = React.forwardRef((
                 status={playerState}
                 customVideoControls={customVideoControls}
                 enableCustomControl={enableCustomControl}
+                overlayImage={overlayImage}
             />
         </div>
     )

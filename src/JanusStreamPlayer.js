@@ -1,5 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Player, ControlBar } from 'video-react';
+import React, { component, useRef, useState, useEffect } from 'react';
+import { Player, ControlBar, ReplayControl,
+	ForwardControl, CurrentTimeDisplay,
+	TimeDivider, PlaybackRateMenuButton, VolumeMenuButton, BigPlayButton, PlayToggle, DurationDisplay, ProgressControl, FullscreenToggle} from 'video-react';
 
 const JanusStreamPlayer = React.forwardRef((
     { 
@@ -10,13 +12,14 @@ const JanusStreamPlayer = React.forwardRef((
         onStop, 
         onMute, 
         onUnmute, 
-        onBandwidthChange,
+        onBandwidthChange, 
         enableCustomControl,
-        customVideoControls, 
+        customVideoControls,
+        overlayImage,
     }, ref ) => {
     return (
         <div className="janus-video-container">
-            {/* <div className="janus-video-status">
+            {/*<div className="janus-video-status">
                 {status === "Ready" && (
                     <span style={{color:"grey"}}>Ready</span>
                 )}
@@ -29,26 +32,27 @@ const JanusStreamPlayer = React.forwardRef((
                 {status === "Error" && (
                     <span style={{color:"red"}}>Error</span>
                 )}
-            </div> */}
+                </div>*/}
+            {overlayImage}
             <Player playsInline autoPlay ref={ref}>
                 {
                     enableCustomControl ?
-                        (
-                            <ControlBar className="janus-control-bar-align-top">
-                                {customVideoControls}
-                                <VolumeMenuButton disabled />
-                                <DurationDisplay disabled />
-                                <ProgressControl disabled />
-                                <PlayToggle disabled />
-                                <TimeDivider disabled />
-                                <CurrentTimeDisplay disabled />
-                                <PlaybackRateMenuButton disabled />
-                                <ForwardControl disabled />
-                            </ControlBar>
-                        ) :
-                        (
-                            <ControlBar disableCompletely={true} />
-                        )
+                    (
+                        <ControlBar className="janus-control-bar-align-top">
+                            {customVideoControls}
+                            <VolumeMenuButton disabled />
+                            <DurationDisplay disabled />
+                            <ProgressControl disabled />
+                            <PlayToggle disabled />
+                            <TimeDivider disabled />
+                            <CurrentTimeDisplay disabled />
+                            <PlaybackRateMenuButton disabled />
+                            <ForwardControl disabled />
+                        </ControlBar>
+                    ) :
+                    (
+                        <ControlBar disableCompletely={true} />
+                    )
                 }
             </Player>
             {isPublisher && (
