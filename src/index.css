@@ -21,7 +21,9 @@ body{
 
 .janus-video-status{
   height: 20px;
-  padding: 10px 10px 5px 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  text-align: right;
   color: #fff;
   font-size: 12px;
 }

@@ -6,12 +6,13 @@ import JanusStreamPlayer from './JanusStreamPlayer';
 
 const JanusStreamer = React.forwardRef((
     { 
-        janus, opaqueId, streamId, enableCustomControl, customVideoControls, overlayImage,
+        janus, opaqueId, streamId, enableCustomControl, customVideoControls, overlayImage, cropperActive,
     }, ref ) => {
     const videoArea = ref;
     const [playerState, setPlayerState] = useState("Ready");
     const [streaming, setStreaming] = useState(null);
     const [list, setList] = useState(null);
+    const [janusBitrate, setJanusBitrate] = useState(null);
 
     let mystream = null;
 
@@ -31,6 +32,8 @@ const JanusStreamer = React.forwardRef((
             if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) {
                 setPlayerState("Error");
             }
+            console.log("[Attached video stream bitrate :]",_streaming.getBitrate());
+            setJanusBitrate(_streaming.getBitrate())
         }else if(eventType === "oncleanup"){
             setPlayerState("Paused");
         }else if(eventType === "error"){
@@ -58,6 +61,8 @@ const JanusStreamer = React.forwardRef((
                 customVideoControls={customVideoControls}
                 enableCustomControl={enableCustomControl}
                 overlayImage={overlayImage}
+                bitrate={janusBitrate}
+                cropperActive={cropperActive}
             />
         </div>
     )
