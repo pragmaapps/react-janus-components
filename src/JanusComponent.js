@@ -6,6 +6,7 @@ const JanusComponent = ({ children, server, isTurnServerEnabled, daqIP }) => {
     const [janusInstance, setJanusInstance] = useState(null);
 
     useEffect(() => {
+        let unmounted = false;
 
         Janus.init({
             debug: "all", callback: function () {
@@ -13,6 +14,7 @@ const JanusComponent = ({ children, server, isTurnServerEnabled, daqIP }) => {
                     console.log("No WebRTC support... ");
                     return;
                 }
+
                 let turnServer = {};
                 let turnServerStatus = isTurnServerEnabled;
                 if (turnServerStatus) {
@@ -38,7 +40,9 @@ const JanusComponent = ({ children, server, isTurnServerEnabled, daqIP }) => {
                         success: function () {
                             // Attach to echo test plugin
                             console.log("Janus loaded");
-                            setJanusInstance(janus);
+                            if (!unmounted) {
+                                setJanusInstance(janus);
+                            }
                         },
                         error: function (error) {
                             Janus.error(error);
@@ -52,6 +56,11 @@ const JanusComponent = ({ children, server, isTurnServerEnabled, daqIP }) => {
             }
         });
 
+
+        return () => {
+            unmounted = true;
+            setJanusInstance(null);
+        };
     }, [])
 
     return (
