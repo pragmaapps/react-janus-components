@@ -69,6 +69,7 @@ const JanusStreamer = React.forwardRef((
         }
 
     }
+    const bitrates = streaming && streaming.webrtcStuff && streaming.webrtcStuff.bitrate ? streaming.webrtcStuff.bitrate.value :  janusBitrate;
     return (
         <div>
             <JanusStreamPlayer
@@ -78,7 +79,7 @@ const JanusStreamer = React.forwardRef((
                 customVideoControls={customVideoControls}
                 enableCustomControl={enableCustomControl}
                 overlayImage={overlayImage}
-                bitrate={janusBitrate}
+                bitrate={bitrates}
                 cropperActive={cropperActive}
             />
         </div>

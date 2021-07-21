@@ -21560,6 +21560,7 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
             (0, _streaming2.startStream)(_streaming, streamId);
         }
     };
+    var bitrates = streaming && streaming.webrtcStuff && streaming.webrtcStuff.bitrate ? streaming.webrtcStuff.bitrate.value : janusBitrate;
     return _react2.default.createElement(
         'div',
         null,
@@ -21570,7 +21571,7 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
             customVideoControls: customVideoControls,
             enableCustomControl: enableCustomControl,
             overlayImage: overlayImage,
-            bitrate: janusBitrate,
+            bitrate: bitrates,
             cropperActive: cropperActive
         })
     );
@@ -21639,28 +21640,6 @@ var JanusSubscriber = function JanusSubscriber(_ref) {
 
     var mystream = null;
 
-    var remoteFeedCallback = function remoteFeedCallback(_remoteFeed, eventType, data) {
-        setRemoteFeed(_remoteFeed);
-        if (eventType === "onremotestream") {
-            mystream = data;
-            var videoContainer = videoArea.current;
-            var videoPlayer = videoContainer.querySelector(".janus-video-player");
-
-            _janus2.default.attachMediaStream(videoPlayer, mystream);
-            if (_remoteFeed.webrtcStuff.pc.iceConnectionState !== "completed" && _remoteFeed.webrtcStuff.pc.iceConnectionState !== "connected") {
-                setPlayerState("Live");
-            }
-            var videoTracks = mystream.getVideoTracks();
-            if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) {
-                setPlayerState("Error");
-            }
-        } else if (eventType === "oncleanup") {
-            setPlayerState("Paused");
-        } else if (eventType === "error") {
-            setPlayerState("Error");
-        }
-    };
-
     (0, _react.useEffect)(function () {
         if (!janus || !room || !pubId || !pubPvtId) {
             return;
@@ -21707,6 +21686,28 @@ var JanusSubscriber = function JanusSubscriber(_ref) {
             }
         });
     }, [janus, room, pubId, pubPvtId]);
+
+    var remoteFeedCallback = function remoteFeedCallback(_remoteFeed, eventType, data) {
+        setRemoteFeed(_remoteFeed);
+        if (eventType === "onremotestream") {
+            mystream = data;
+            var videoContainer = videoArea.current;
+            var videoPlayer = videoContainer.querySelector(".janus-video-player");
+
+            _janus2.default.attachMediaStream(videoPlayer, mystream);
+            if (_remoteFeed.webrtcStuff.pc.iceConnectionState !== "completed" && _remoteFeed.webrtcStuff.pc.iceConnectionState !== "connected") {
+                setPlayerState("Live");
+            }
+            var videoTracks = mystream.getVideoTracks();
+            if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) {
+                setPlayerState("Error");
+            }
+        } else if (eventType === "oncleanup") {
+            setPlayerState("Paused");
+        } else if (eventType === "error") {
+            setPlayerState("Error");
+        }
+    };
 
     return _react2.default.createElement(
         'div',
