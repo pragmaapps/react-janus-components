@@ -37,7 +37,7 @@ const JanusStreamPlayer = React.forwardRef((
                 </div>*/}
             {(overlayImage || cropperActive) ? '' : (<div className="janus-video-status">{bitrate}</div>)}
             {overlayImage}
-            <Player playsInline autoPlay ref={ref}>
+            <Player playsInline autoPlay muted ref={ref}>
                 {
                     enableCustomControl ?
                     (

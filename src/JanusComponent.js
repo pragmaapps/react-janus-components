@@ -6,8 +6,17 @@ const JanusComponent = ({ children, server, isTurnServerEnabled, daqIP }) => {
     const [janusInstance, setJanusInstance] = useState(null);
 
     useEffect(() => {
-        let unmounted = false;
+        // let unmounted = false;
+        handleConnection();
 
+
+        return () => {
+            // unmounted = true;
+            setJanusInstance(null);
+        };
+    }, [])
+
+    const handleConnection = () =>{
         Janus.init({
             debug: "all", callback: function () {
                 if (!Janus.isWebrtcSupported()) {
@@ -40,9 +49,9 @@ const JanusComponent = ({ children, server, isTurnServerEnabled, daqIP }) => {
                         success: function () {
                             // Attach to echo test plugin
                             console.log("Janus loaded");
-                            if (!unmounted) {
+                            // if (!unmounted) {
                                 setJanusInstance(janus);
-                            }
+                            // }
                         },
                         error: function (error) {
                             Janus.error(error);
@@ -55,18 +64,13 @@ const JanusComponent = ({ children, server, isTurnServerEnabled, daqIP }) => {
                 });
             }
         });
+    }
 
-
-        return () => {
-            unmounted = true;
-            setJanusInstance(null);
-        };
-    }, [])
 
     return (
         <div className="janus-container" ref={janusEl}>
             {children && (
-                React.cloneElement(children, { janus: janusInstance })
+                React.cloneElement(children, { janus: janusInstance, createConnection: handleConnection })
             )}
         </div>
     );

@@ -21234,8 +21234,16 @@ var JanusComponent = function JanusComponent(_ref) {
         setJanusInstance = _useState2[1];
 
     (0, _react.useEffect)(function () {
-        var unmounted = false;
+        // let unmounted = false;
+        handleConnection();
 
+        return function () {
+            // unmounted = true;
+            setJanusInstance(null);
+        };
+    }, []);
+
+    var handleConnection = function handleConnection() {
         _janus2.default.init({
             debug: "all", callback: function callback() {
                 if (!_janus2.default.isWebrtcSupported()) {
@@ -21267,9 +21275,9 @@ var JanusComponent = function JanusComponent(_ref) {
                     success: function success() {
                         // Attach to echo test plugin
                         console.log("Janus loaded");
-                        if (!unmounted) {
-                            setJanusInstance(janus);
-                        }
+                        // if (!unmounted) {
+                        setJanusInstance(janus);
+                        // }
                     },
                     error: function error(_error) {
                         _janus2.default.error(_error);
@@ -21281,17 +21289,12 @@ var JanusComponent = function JanusComponent(_ref) {
                 }, turnServer));
             }
         });
-
-        return function () {
-            unmounted = true;
-            setJanusInstance(null);
-        };
-    }, []);
+    };
 
     return _react2.default.createElement(
         'div',
         { className: 'janus-container', ref: janusEl },
-        children && _react2.default.cloneElement(children, { janus: janusInstance })
+        children && _react2.default.cloneElement(children, { janus: janusInstance, createConnection: handleConnection })
     );
 };
 
@@ -21640,6 +21643,28 @@ var JanusSubscriber = function JanusSubscriber(_ref) {
 
     var mystream = null;
 
+    var remoteFeedCallback = function remoteFeedCallback(_remoteFeed, eventType, data) {
+        setRemoteFeed(_remoteFeed);
+        if (eventType === "onremotestream") {
+            mystream = data;
+            var videoContainer = videoArea.current;
+            var videoPlayer = videoContainer.querySelector(".janus-video-player");
+
+            _janus2.default.attachMediaStream(videoPlayer, mystream);
+            if (_remoteFeed.webrtcStuff.pc.iceConnectionState !== "completed" && _remoteFeed.webrtcStuff.pc.iceConnectionState !== "connected") {
+                setPlayerState("Live");
+            }
+            var videoTracks = mystream.getVideoTracks();
+            if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) {
+                setPlayerState("Error");
+            }
+        } else if (eventType === "oncleanup") {
+            setPlayerState("Paused");
+        } else if (eventType === "error") {
+            setPlayerState("Error");
+        }
+    };
+
     (0, _react.useEffect)(function () {
         if (!janus || !room || !pubId || !pubPvtId) {
             return;
@@ -21686,28 +21711,6 @@ var JanusSubscriber = function JanusSubscriber(_ref) {
             }
         });
     }, [janus, room, pubId, pubPvtId]);
-
-    var remoteFeedCallback = function remoteFeedCallback(_remoteFeed, eventType, data) {
-        setRemoteFeed(_remoteFeed);
-        if (eventType === "onremotestream") {
-            mystream = data;
-            var videoContainer = videoArea.current;
-            var videoPlayer = videoContainer.querySelector(".janus-video-player");
-
-            _janus2.default.attachMediaStream(videoPlayer, mystream);
-            if (_remoteFeed.webrtcStuff.pc.iceConnectionState !== "completed" && _remoteFeed.webrtcStuff.pc.iceConnectionState !== "connected") {
-                setPlayerState("Live");
-            }
-            var videoTracks = mystream.getVideoTracks();
-            if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) {
-                setPlayerState("Error");
-            }
-        } else if (eventType === "oncleanup") {
-            setPlayerState("Paused");
-        } else if (eventType === "error") {
-            setPlayerState("Error");
-        }
-    };
 
     return _react2.default.createElement(
         'div',
@@ -21906,7 +21909,7 @@ var JanusStreamPlayer = _react2.default.forwardRef(function (_ref, ref) {
         overlayImage,
         _react2.default.createElement(
             _videoReact.Player,
-            { playsInline: true, autoPlay: true, ref: ref },
+            { playsInline: true, autoPlay: true, muted: true, ref: ref },
             enableCustomControl ? _react2.default.createElement(
                 _videoReact.ControlBar,
                 { className: 'janus-control-bar-align-top' },
