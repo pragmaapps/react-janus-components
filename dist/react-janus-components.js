@@ -21488,7 +21488,8 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
         customVideoControls = _ref.customVideoControls,
         overlayImage = _ref.overlayImage,
         cropperActive = _ref.cropperActive,
-        setRecordedPlaybleFile = _ref.setRecordedPlaybleFile;
+        setRecordedPlaybleFile = _ref.setRecordedPlaybleFile,
+        showFramesRate = _ref.showFramesRate;
 
     var videoArea = ref;
 
@@ -21575,7 +21576,8 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
             enableCustomControl: enableCustomControl,
             overlayImage: overlayImage,
             bitrate: bitrates,
-            cropperActive: cropperActive
+            cropperActive: cropperActive,
+            showFramesRate: showFramesRate
         })
     );
 });
@@ -21896,16 +21898,17 @@ var JanusStreamPlayer = _react2.default.forwardRef(function (_ref, ref) {
         customVideoControls = _ref.customVideoControls,
         overlayImage = _ref.overlayImage,
         bitrate = _ref.bitrate,
-        cropperActive = _ref.cropperActive;
+        cropperActive = _ref.cropperActive,
+        showFramesRate = _ref.showFramesRate;
 
     return _react2.default.createElement(
         'div',
         { className: 'janus-video-container' },
-        overlayImage || cropperActive ? '' : _react2.default.createElement(
+        overlayImage || cropperActive ? '' : showFramesRate ? _react2.default.createElement(
             'div',
             { className: 'janus-video-status' },
             bitrate
-        ),
+        ) : "",
         overlayImage,
         _react2.default.createElement(
             _videoReact.Player,
@@ -22275,7 +22278,7 @@ function subscribeRemoteFeed(janus, opaqueId, room, id, pvtId, display, audio, v
 
 exports = module.exports = __webpack_require__(75)(false);
 // Module
-exports.push([module.i, "body{\n  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif\n}\n\n.janus-video{\n  width: 500px;\n  height: 500px;\n}\n\n.janus-video-container{\n  background-color: #000;\n  width: 100%;\n}\n.janus-video-container .video-react.video-react-fluid {\n  padding-top: 62.5% !important\n}\n.janus-video-player{\n  width: 100%;\n  height: 300px;\n}\n\n.janus-video-status{\n  height: 20px;\n  padding-right: 10px;\n  padding-top: 5px;\n  text-align: right;\n  color: #fff;\n  font-size: 12px;\n}\n\n.janus-video-controls{\n  height: 40px;\n  background-color: #333;\n  display: flex;\n  flex-direction: row;\n  padding-left:10px;\n  padding-top: 5px;\n}\n\n.janus-btn{\n  font-size: 12px;\n  margin-right: 10px;\n  color: #fff;\n  border: 1px solid #fff;\n  border-radius: 5px;\n  height: 20px;\n  padding: 5px;\n  line-height: 20px;\n}\n\n.janus-btn:hover{\n  cursor: pointer;\n  background-color: #0000009a;\n}\n\n.janus-select{\n  margin-left: auto;\n  padding-right: 10px;\n  padding-top: 3px;\n}\n\n.janus-select select{\n  background-color: #0c71a0;\n  color: #fff;\n  padding: 5px;\n  border: 1px solid #fff;\n  border-radius: 5px;\n  /* height: 50px; */\n  appearance: none;\n  /* line-height: 50px */\n}\n\n.janus-select select:focus{\n  outline: none;\n}", ""]);
+exports.push([module.i, "body{\r\n  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif\r\n}\r\n\r\n.janus-video{\r\n  width: 500px;\r\n  height: 500px;\r\n}\r\n\r\n.janus-video-container{\r\n  background-color: #000;\r\n  width: 100%;\r\n}\r\n.janus-video-container .video-react.video-react-fluid {\r\n  padding-top: 62.5% !important\r\n}\r\n.janus-video-player{\r\n  width: 100%;\r\n  height: 300px;\r\n}\r\n\r\n.janus-video-status{\r\n  height: 20px;\r\n  padding-right: 10px;\r\n  padding-top: 5px;\r\n  text-align: right;\r\n  color: #fff;\r\n  font-size: 12px;\r\n}\r\n\r\n.janus-video-controls{\r\n  height: 40px;\r\n  background-color: #333;\r\n  display: flex;\r\n  flex-direction: row;\r\n  padding-left:10px;\r\n  padding-top: 5px;\r\n}\r\n\r\n.janus-btn{\r\n  font-size: 12px;\r\n  margin-right: 10px;\r\n  color: #fff;\r\n  border: 1px solid #fff;\r\n  border-radius: 5px;\r\n  height: 20px;\r\n  padding: 5px;\r\n  line-height: 20px;\r\n}\r\n\r\n.janus-btn:hover{\r\n  cursor: pointer;\r\n  background-color: #0000009a;\r\n}\r\n\r\n.janus-select{\r\n  margin-left: auto;\r\n  padding-right: 10px;\r\n  padding-top: 3px;\r\n}\r\n\r\n.janus-select select{\r\n  background-color: #0c71a0;\r\n  color: #fff;\r\n  padding: 5px;\r\n  border: 1px solid #fff;\r\n  border-radius: 5px;\r\n  /* height: 50px; */\r\n  appearance: none;\r\n  /* line-height: 50px */\r\n}\r\n\r\n.janus-select select:focus{\r\n  outline: none;\r\n}", ""]);
 
 
 /***/ }),

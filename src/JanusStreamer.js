@@ -7,7 +7,7 @@ import { Video } from 'video-react';
 
 const JanusStreamer = React.forwardRef((
     {
-        janus, opaqueId, streamId, enableCustomControl, customVideoControls, overlayImage, cropperActive, setRecordedPlaybleFile
+        janus, opaqueId, streamId, enableCustomControl, customVideoControls, overlayImage, cropperActive, setRecordedPlaybleFile, showFramesRate
     }, ref) => {
     const videoArea = ref;
     const [playerState, setPlayerState] = useState("Ready");
@@ -81,6 +81,7 @@ const JanusStreamer = React.forwardRef((
                 overlayImage={overlayImage}
                 bitrate={bitrates}
                 cropperActive={cropperActive}
+                showFramesRate={showFramesRate}
             />
         </div>
     )
