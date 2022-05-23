@@ -21489,7 +21489,8 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
         overlayImage = _ref.overlayImage,
         cropperActive = _ref.cropperActive,
         setRecordedPlaybleFile = _ref.setRecordedPlaybleFile,
-        showFramesRate = _ref.showFramesRate;
+        showFramesRate = _ref.showFramesRate,
+        playPauseButton = _ref.playPauseButton;
 
     var videoArea = ref;
 
@@ -21577,7 +21578,8 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
             overlayImage: overlayImage,
             bitrate: bitrates,
             cropperActive: cropperActive,
-            showFramesRate: showFramesRate
+            showFramesRate: showFramesRate,
+            playPauseButton: playPauseButton
         })
     );
 });
@@ -21899,7 +21901,8 @@ var JanusStreamPlayer = _react2.default.forwardRef(function (_ref, ref) {
         overlayImage = _ref.overlayImage,
         bitrate = _ref.bitrate,
         cropperActive = _ref.cropperActive,
-        showFramesRate = _ref.showFramesRate;
+        showFramesRate = _ref.showFramesRate,
+        playPauseButton = _ref.playPauseButton;
 
     return _react2.default.createElement(
         'div',
@@ -21925,7 +21928,8 @@ var JanusStreamPlayer = _react2.default.forwardRef(function (_ref, ref) {
                 _react2.default.createElement(_videoReact.CurrentTimeDisplay, { disabled: true }),
                 _react2.default.createElement(_videoReact.PlaybackRateMenuButton, { disabled: true }),
                 _react2.default.createElement(_videoReact.ForwardControl, { disabled: true })
-            ) : _react2.default.createElement(_videoReact.ControlBar, { disableCompletely: true })
+            ) : _react2.default.createElement(_videoReact.ControlBar, { disableCompletely: true }),
+            _react2.default.createElement(_videoReact.Shortcut, { clickable: playPauseButton === undefined ? false : playPauseButton })
         ),
         isPublisher && _react2.default.createElement(
             'div',

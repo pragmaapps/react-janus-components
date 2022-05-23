@@ -1,7 +1,7 @@
 import React, { component, useRef, useState, useEffect } from 'react';
 import { Player, ControlBar, ReplayControl,
 	ForwardControl, CurrentTimeDisplay,
-	TimeDivider, PlaybackRateMenuButton, VolumeMenuButton, BigPlayButton, PlayToggle, DurationDisplay, ProgressControl, FullscreenToggle} from 'video-react';
+	TimeDivider, PlaybackRateMenuButton, VolumeMenuButton,Shortcut, BigPlayButton, PlayToggle, DurationDisplay, ProgressControl, FullscreenToggle} from 'video-react';
 
 const JanusStreamPlayer = React.forwardRef((
     { 
@@ -18,7 +18,8 @@ const JanusStreamPlayer = React.forwardRef((
         overlayImage,
         bitrate,
         cropperActive,
-        showFramesRate
+        showFramesRate,
+        playPauseButton
     }, ref ) => {
     return (
         <div className="janus-video-container">
@@ -58,6 +59,7 @@ const JanusStreamPlayer = React.forwardRef((
                         <ControlBar disableCompletely={true} />
                     )
                 }
+                <Shortcut clickable={playPauseButton===undefined ? false : playPauseButton} />
             </Player>
             {isPublisher && (
                 <div className="janus-video-controls">
