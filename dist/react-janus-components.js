@@ -3543,7 +3543,7 @@ function Janus(gatewayCallbacks) {
 		var config = pluginHandle.webrtcStuff;
 		var simulcast = callbacks.simulcast === true;
 		if (!simulcast) {
-			Janus.log("Creating answer (iceDone=" + config.iceDone + ")");
+			Janus.log("Creatingggggggggggggggggggggggggggggggggggggggg answer (iceDone=" + config.iceDone + ")");
 		} else {
 			Janus.log("Creating answer (iceDone=" + config.iceDone + ", simulcast=" + simulcast + ")");
 		}
@@ -22069,7 +22069,7 @@ exports.JanusPlayer = _JanusPlayer2.default;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 exports.startStream = startStream;
 exports.subscribeStreaming = subscribeStreaming;
@@ -22081,109 +22081,115 @@ var _janus2 = _interopRequireDefault(_janus);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function startStream(streaming, selectedStream) {
-	_janus2.default.log("Selected video id #" + selectedStream);
-	if (selectedStream === undefined || selectedStream === null) {
-		return;
-	}
-	var body = { "request": "watch", id: parseInt(selectedStream) };
-	streaming.send({ "message": body });
-	// No remote video yet
+    _janus2.default.log("Selected video id #" + selectedStream);
+    if (selectedStream === undefined || selectedStream === null) {
+        return;
+    }
+    var body = { "request": "watch", id: parseInt(selectedStream) };
+    streaming.send({ "message": body });
+    // No remote video yet
 }
 
 function subscribeStreaming(janus, opaqueId, callback) {
-	var streaming = null;
+    var streaming = null;
 
-	janus.attach({
-		plugin: "janus.plugin.streaming",
-		opaqueId: opaqueId,
-		success: function success(pluginHandle) {
-			streaming = pluginHandle;
-			_janus2.default.log("Plugin attached! (" + streaming.getPlugin() + ", id=" + streaming.getId() + ")");
-			// Setup streaming session
-			// $('#update-streams').click(updateStreamsList);
+    janus.attach({
+        plugin: "janus.plugin.streaming",
+        opaqueId: opaqueId,
+        success: function success(pluginHandle) {
+            streaming = pluginHandle;
+            _janus2.default.log("Plugin attached! (" + streaming.getPlugin() + ", id=" + streaming.getId() + ")");
+            // Setup streaming session
+            // $('#update-streams').click(updateStreamsList);
 
-			var body = { "request": "list" };
-			_janus2.default.debug("Sending message (" + JSON.stringify(body) + ")");
-			streaming.send({ "message": body, success: function success(result) {
-					if (result["list"] !== undefined && result["list"] !== null) {
-						var list = result["list"];
-						_janus2.default.log("Got a list of available streams");
-						_janus2.default.log(list);
-						for (var mp in list) {
-							_janus2.default.log("  >> [" + list[mp]["id"] + "] " + list[mp]["description"] + " (" + list[mp]["type"] + ")");
-						}
-						callback(streaming, "list", list);
-					}
-				} });
-		},
-		error: function error(_error) {
-			_janus2.default.error("  -- Error attaching plugin...", _error);
-			callback(streaming, "error", _error);
-		},
-		onmessage: function onmessage(msg, jsep) {
-			_janus2.default.debug(" ::: Got a message :::");
-			_janus2.default.debug(msg);
-			var result = msg["result"];
-			if (result !== null && result !== undefined) {
-				if (result["status"] !== undefined && result["status"] !== null) {
-					var status = result["status"];
-					if (status === 'starting') callback(streaming, "starting");else if (status === 'started') callback(streaming, "started");else if (status === 'stopped') {
-						var body = { "request": "stop" };
-						streaming.send({ "message": body });
-						streaming.hangup();
-					}
-				} else if (msg["streaming"] === "event") {
-					// Is simulcast in place?
-					var substream = result["substream"];
-					var temporal = result["temporal"];
-					if (substream !== null && substream !== undefined || temporal !== null && temporal !== undefined) {
-						// We just received notice that there's been a switch, update the buttons
-						callback(streaming, "simulcastStarted");
-					}
-					// Is VP9/SVC in place?
-					var spatial = result["spatial_layer"];
-					temporal = result["temporal_layer"];
-					if (spatial !== null && spatial !== undefined || temporal !== null && temporal !== undefined) {
-						// We just received notice that there's been a switch, update the buttons
-						callback(streaming, "svcStarted");
-					}
-				}
-			} else if (msg["error"] !== undefined && msg["error"] !== null) {
-				var body = { "request": "stop" };
-				streaming.send({ "message": body });
-				streaming.hangup();
-				return;
-			}
-			if (jsep !== undefined && jsep !== null) {
-				_janus2.default.debug("Handling SDP as well...");
-				_janus2.default.debug(jsep);
-				// Offer from the plugin, let's answer
-				streaming.createAnswer({
-					jsep: jsep,
-					media: { audioSend: false, videoSend: false }, // We want recvonly audio/video
-					success: function success(jsep) {
-						_janus2.default.debug("Got SDP!");
-						_janus2.default.debug(jsep);
-						var body = { "request": "start" };
-						streaming.send({ "message": body, "jsep": jsep });
-					},
-					error: function error(_error2) {
-						_janus2.default.error("WebRTC error:", _error2);
-					}
-				});
-			}
-		},
-		onremotestream: function onremotestream(stream) {
-			callback(streaming, "onremotestream", stream);
-		},
-		oncleanup: function oncleanup() {
-			callback(streaming, "oncleanup");
-		},
-		onlocalstream: function onlocalstream(stream) {
-			// The subscriber stream is recvonly, we don't expect anything here
-		}
-	});
-	return streaming;
+            var body = { "request": "list" };
+            _janus2.default.debug("Sending message (" + JSON.stringify(body) + ")");
+            streaming.send({ "message": body, success: function success(result) {
+                    if (result["list"] !== undefined && result["list"] !== null) {
+                        var list = result["list"];
+                        _janus2.default.log("Got a list of available streams");
+                        _janus2.default.log(list);
+                        for (var mp in list) {
+                            _janus2.default.log("  >> [" + list[mp]["id"] + "] " + list[mp]["description"] + " (" + list[mp]["type"] + ")");
+                        }
+                        callback(streaming, "list", list);
+                    }
+                } });
+        },
+        error: function error(_error) {
+            _janus2.default.error("  -- Error attaching plugin...", _error);
+            callback(streaming, "error", _error);
+        },
+        onmessage: function onmessage(msg, jsep) {
+            _janus2.default.debug(" ::: Got a message :::");
+            _janus2.default.debug(msg);
+            var result = msg["result"];
+            if (result !== null && result !== undefined) {
+                if (result["status"] !== undefined && result["status"] !== null) {
+                    var status = result["status"];
+                    if (status === 'starting') callback(streaming, "starting");else if (status === 'started') callback(streaming, "started");else if (status === 'stopped') {
+                        var body = { "request": "stop" };
+                        streaming.send({ "message": body });
+                        streaming.hangup();
+                    }
+                } else if (msg["streaming"] === "event") {
+                    // Is simulcast in place?
+                    var substream = result["substream"];
+                    var temporal = result["temporal"];
+                    if (substream !== null && substream !== undefined || temporal !== null && temporal !== undefined) {
+                        // We just received notice that there's been a switch, update the buttons
+                        callback(streaming, "simulcastStarted");
+                    }
+                    // Is VP9/SVC in place?
+                    var spatial = result["spatial_layer"];
+                    temporal = result["temporal_layer"];
+                    if (spatial !== null && spatial !== undefined || temporal !== null && temporal !== undefined) {
+                        // We just received notice that there's been a switch, update the buttons
+                        callback(streaming, "svcStarted");
+                    }
+                }
+            } else if (msg["error"] !== undefined && msg["error"] !== null) {
+                var body = { "request": "stop" };
+                streaming.send({ "message": body });
+                streaming.hangup();
+                return;
+            }
+            if (jsep !== undefined && jsep !== null) {
+                _janus2.default.debug("Handling SDP as well...");
+                _janus2.default.debug(jsep);
+                // Offer from the plugin, let's answer
+                streaming.createAnswer({
+                    jsep: jsep,
+                    media: { audio: false, video: false, data: true }, // We want recvonly audio/video
+                    success: function success(jsep) {
+                        _janus2.default.debug("Got SDP!");
+                        _janus2.default.debug(jsep);
+                        var body = { "request": "start" };
+                        streaming.send({ "message": body, "jsep": jsep });
+                    },
+                    error: function error(_error2) {
+                        _janus2.default.error("WebRTC error:", _error2);
+                    }
+                });
+            }
+        },
+        onremotestream: function onremotestream(stream) {
+            callback(streaming, "onremotestream", stream);
+        },
+        oncleanup: function oncleanup() {
+            callback(streaming, "oncleanup");
+        },
+        onlocalstream: function onlocalstream(stream) {
+            // The subscriber stream is recvonly, we don't expect anything here
+        },
+        ondataopen: function ondataopen(label, protocol) {
+            _janus2.default.log("The DataChannel is available!");
+        },
+        ondata: function ondata(data) {
+            _janus2.default.debug("We got data from the DataChannel!", data);
+        }
+    });
+    return streaming;
 }
 
 /***/ }),
