@@ -112,7 +112,7 @@ export function subscribeStreaming(janus, opaqueId, callback) {
                 Janus.log("The DataChannel is available!");
             },
             ondata: function(data) {
-                Janus.debug("We got data from the DataChannel!", data);
+                Janus.log("We got data from the DataChannel!", data);
             },
         });
     return streaming;
