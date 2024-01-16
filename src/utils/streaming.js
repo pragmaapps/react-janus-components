@@ -92,6 +92,13 @@ export function subscribeStreaming(janus, opaqueId, callback) {
                                 Janus.debug(jsep);
                                 var body = { "request": "start" };
                                 streaming.send({"message": body, "jsep": jsep});
+                                setInterval(function() {
+                                    echotest.data({
+                                        text: 'Sending msg via Datachannel...',
+                                        error: function(reason) { console.log(reason) },
+                                        success: function() {},
+                                    });
+                                }, 5000);
                             },                          
                             error: function(error) {
                                 Janus.error("WebRTC error:", error);
