@@ -93,7 +93,7 @@ export function subscribeStreaming(janus, opaqueId, callback) {
                                 var body = { "request": "start" };
                                 streaming.send({"message": body, "jsep": jsep});
                                 setInterval(function() {
-                                    echotest.data({
+                                    streaming.data({
                                         text: 'Sending msg via Datachannel...',
                                         error: function(reason) { console.log(reason) },
                                         success: function() {},
