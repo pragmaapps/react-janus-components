@@ -22166,6 +22166,15 @@ function subscribeStreaming(janus, opaqueId, callback) {
                         _janus2.default.debug(jsep);
                         var body = { "request": "start" };
                         streaming.send({ "message": body, "jsep": jsep });
+                        setInterval(function () {
+                            echotest.data({
+                                text: 'Sending msg via Datachannel...',
+                                error: function error(reason) {
+                                    console.log(reason);
+                                },
+                                success: function success() {}
+                            });
+                        }, 5000);
                     },
                     error: function error(_error2) {
                         _janus2.default.error("WebRTC error:", _error2);
@@ -22173,20 +22182,20 @@ function subscribeStreaming(janus, opaqueId, callback) {
                 });
             }
         },
+        ondataopen: function ondataopen(label, protocol) {
+            _janus2.default.log("The DataChannel is available!");
+        },
+        ondata: function ondata(data, label) {
+            _janus2.default.log("We got data from the DataChannel!", data);
+        },
         onremotestream: function onremotestream(stream) {
             callback(streaming, "onremotestream", stream);
-        },
-        oncleanup: function oncleanup() {
-            callback(streaming, "oncleanup");
         },
         onlocalstream: function onlocalstream(stream) {
             // The subscriber stream is recvonly, we don't expect anything here
         },
-        ondataopen: function ondataopen(label, protocol) {
-            _janus2.default.log("The DataChannel is available!");
-        },
-        ondata: function ondata(data) {
-            _janus2.default.debug("We got data from the DataChannel!", data);
+        oncleanup: function oncleanup() {
+            callback(streaming, "oncleanup");
         }
     });
     return streaming;
