@@ -22166,15 +22166,6 @@ function subscribeStreaming(janus, opaqueId, callback) {
                         _janus2.default.debug(jsep);
                         var body = { "request": "start" };
                         streaming.send({ "message": body, "jsep": jsep });
-                        setInterval(function () {
-                            streaming.data({
-                                text: 'Sending msg via Datachannel...',
-                                error: function error(reason) {
-                                    console.log(reason);
-                                },
-                                success: function success() {}
-                            });
-                        }, 5000);
                     },
                     error: function error(_error2) {
                         _janus2.default.error("WebRTC error:", _error2);
