@@ -21336,6 +21336,7 @@ var JanusDatachannel = _react2.default.forwardRef(function (_ref, ref) {
     (0, _react.useEffect)(function () {
         var unmounted = false;
         if (!janus && !unmounted) {
+            console.log("[data channel]: janus is not mounted", janus);
             return;
         }
 
@@ -22293,8 +22294,8 @@ function subscribeStreaming(janus, opaqueId, callback) {
                 // Offer from the plugin, let's answer
                 streaming.createAnswer({
                     jsep: jsep,
-                    //media: { audio: false, video:false,data:true }, // We want recvonly audio/video
-                    media: { audioSend: false, videoSend: false },
+                    media: { audio: false, video: false, data: true }, // We want recvonly audio/video
+                    //media: { audioSend: false, videoSend: false },
                     success: function success(jsep) {
                         _janus2.default.debug("Got SDP!");
                         _janus2.default.debug(jsep);
