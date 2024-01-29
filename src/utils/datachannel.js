@@ -1,25 +1,26 @@
 import Janus from './janus';
-
 export function subscribeDatachannel(janus, opaqueId, callback) {
     let datachannel = null;
-
+    let selectedDataChannel = 4;
     janus.attach(
         {
             plugin: "janus.plugin.streaming",
             opaqueId: opaqueId,
             success: function(pluginHandle) {
                 datachannel = pluginHandle;
-                Janus.log("Plugin attached! (" + datachannel.getPlugin() + ", id=" + datachannel.getId() + ")");
+                Janus.log("Data channel Plugin attached! (" + datachannel.getPlugin() + ", id=" + datachannel.getId() + ")");
+                var body = { "request": "watch", id: parseInt(selectedDataChannel)};
+                datachannel.send({"message": body});
             },
             error: function(error) {
                 Janus.error("  -- Error attaching plugin...", error);
                 callback(datachannel, "error", error);
             },      
             onmessage: function(msg, jsep) {
-                Janus.debug(" ::: Got a message :::");
+                Janus.debug(" ::: Got a message on data channel :::");
                 Janus.debug(msg);
                 if(jsep !== undefined && jsep !== null) {
-                    Janus.debug("Handling SDP as well...");
+                    Janus.debug("Handling data channel SDP as well...");
                     Janus.debug(jsep);
                     // Offer from the plugin, let's answer
                     datachannel.createAnswer(
@@ -38,18 +39,13 @@ export function subscribeDatachannel(janus, opaqueId, callback) {
                         });
                 }
             },
-            ondataopen: function(label, protocol) {
+            ondataopen: function(datachannel) {
                 Janus.log("The DataChannel is available!");
+                callback(datachannel, "ondataopen", datachannel);
             },
-            ondata: function(data, label) {
-                Janus.log("We got data from the DataChannel!", data);
-                callback(datachannel,data);
-            },
-            onremotestream: function(stream) {
-                // The subscriber stream is data only, we don't expect anything here
-            },
-            onlocalstream: function(stream) {
-                // The subscriber stream is recvonly, we don't expect anything here
+            ondata: function(datachannel) {
+                //Janus.log("We got data from the DataChannel!", datachannel);
+                callback(datachannel, "ondata", datachannel);
             },
             oncleanup: function() {
                 // The subscriber stream is data only, we don't expect anything here    

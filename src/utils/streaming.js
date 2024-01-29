@@ -100,12 +100,6 @@ export function subscribeStreaming(janus, opaqueId, callback) {
                         });
                 }
             },
-            ondataopen: function(label, protocol) {
-                Janus.log("The DataChannel is available!");
-            },
-            ondata: function(data, label) {
-                Janus.log("We got data from the DataChannel!", data);
-            },
             onremotestream: function(stream) {
                 callback(streaming, "onremotestream", stream);
             },

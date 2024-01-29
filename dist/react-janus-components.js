@@ -21327,16 +21327,18 @@ var _datachannel2 = __webpack_require__(73);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var dataChannelData = '';
+var timer = '';
 var JanusDatachannel = _react2.default.forwardRef(function (_ref, ref) {
     var janus = _ref.janus,
         opaqueId = _ref.opaqueId,
-        streamId = _ref.streamId;
+        streamId = _ref.streamId,
+        handleDataChannelData = _ref.handleDataChannelData;
 
 
     (0, _react.useEffect)(function () {
         var unmounted = false;
         if (!janus && !unmounted) {
-            console.log("[data channel]: janus is not mounted", janus);
             return;
         }
 
@@ -21347,8 +21349,26 @@ var JanusDatachannel = _react2.default.forwardRef(function (_ref, ref) {
             unmounted = true;
         };
     }, [janus]);
-    var datachannelCallback = function datachannelCallback(_datachannel, data) {
-        console.log("[React Janus component][data we received from dataChannel]", data);
+    /*const datachannelCallback = (_datachannel, eventType, data) => {
+        //console.log("[React Janus component][data we received from dataChannel]", _datachannel, eventType, data);
+        clearTimeout(timer);
+        if(data && eventType == "ondata" && data != "datachannel") {
+            dataChannelData = dataChannelData.concat(data);
+        }
+        console.log("dataChannelData",dataChannelData );
+        timer = setTimeout(()=> {
+            handleDataChannelData(dataChannelData);
+        },8000);
+    }*/
+    var datachannelCallback = function datachannelCallback(_datachannel, eventType, data) {
+        if (data && eventType == "ondata" && data != "datachannel") {
+            var parsedObject = JSON.parse(data);
+            var histogramData = parsedObject.histogram;
+            for (var i = 0, t = 155; i < t; i++) {
+                histogramData.push(Math.floor(Math.random() * (4 + t)) * 0);
+            }
+            handleDataChannelData(histogramData);
+        }
     };
     return _react2.default.createElement('div', null);
 });
@@ -22141,23 +22161,25 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function subscribeDatachannel(janus, opaqueId, callback) {
     var datachannel = null;
-
+    var selectedDataChannel = 4;
     janus.attach({
         plugin: "janus.plugin.streaming",
         opaqueId: opaqueId,
         success: function success(pluginHandle) {
             datachannel = pluginHandle;
-            _janus2.default.log("Plugin attached! (" + datachannel.getPlugin() + ", id=" + datachannel.getId() + ")");
+            _janus2.default.log("Data channel Plugin attached! (" + datachannel.getPlugin() + ", id=" + datachannel.getId() + ")");
+            var body = { "request": "watch", id: parseInt(selectedDataChannel) };
+            datachannel.send({ "message": body });
         },
         error: function error(_error) {
             _janus2.default.error("  -- Error attaching plugin...", _error);
             callback(datachannel, "error", _error);
         },
         onmessage: function onmessage(msg, jsep) {
-            _janus2.default.debug(" ::: Got a message :::");
+            _janus2.default.debug(" ::: Got a message on data channel :::");
             _janus2.default.debug(msg);
             if (jsep !== undefined && jsep !== null) {
-                _janus2.default.debug("Handling SDP as well...");
+                _janus2.default.debug("Handling data channel SDP as well...");
                 _janus2.default.debug(jsep);
                 // Offer from the plugin, let's answer
                 datachannel.createAnswer({
@@ -22175,18 +22197,13 @@ function subscribeDatachannel(janus, opaqueId, callback) {
                 });
             }
         },
-        ondataopen: function ondataopen(label, protocol) {
+        ondataopen: function ondataopen(datachannel) {
             _janus2.default.log("The DataChannel is available!");
+            callback(datachannel, "ondataopen", datachannel);
         },
-        ondata: function ondata(data, label) {
-            _janus2.default.log("We got data from the DataChannel!", data);
-            callback(datachannel, data);
-        },
-        onremotestream: function onremotestream(stream) {
-            // The subscriber stream is data only, we don't expect anything here
-        },
-        onlocalstream: function onlocalstream(stream) {
-            // The subscriber stream is recvonly, we don't expect anything here
+        ondata: function ondata(datachannel) {
+            //Janus.log("We got data from the DataChannel!", datachannel);
+            callback(datachannel, "ondata", datachannel);
         },
         oncleanup: function oncleanup() {
             // The subscriber stream is data only, we don't expect anything here    
@@ -22294,8 +22311,8 @@ function subscribeStreaming(janus, opaqueId, callback) {
                 // Offer from the plugin, let's answer
                 streaming.createAnswer({
                     jsep: jsep,
-                    media: { audio: false, video: false, data: true }, // We want recvonly audio/video
-                    //media: { audioSend: false, videoSend: false },
+                    //media: { audio: false, video:false,data:true }, // We want recvonly audio/video
+                    media: { audioSend: false, videoSend: false },
                     success: function success(jsep) {
                         _janus2.default.debug("Got SDP!");
                         _janus2.default.debug(jsep);
@@ -22307,12 +22324,6 @@ function subscribeStreaming(janus, opaqueId, callback) {
                     }
                 });
             }
-        },
-        ondataopen: function ondataopen(label, protocol) {
-            _janus2.default.log("The DataChannel is available!");
-        },
-        ondata: function ondata(data, label) {
-            _janus2.default.log("We got data from the DataChannel!", data);
         },
         onremotestream: function onremotestream(stream) {
             callback(streaming, "onremotestream", stream);
