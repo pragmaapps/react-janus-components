@@ -2831,7 +2831,7 @@
 			var config = pluginHandle.webrtcStuff;
 			var simulcast = (callbacks.simulcast === true);
 			if(!simulcast) {
-				Janus.log("Creating answer (iceDone=" + config.iceDone + ")");
+				Janus.log("Creatingggggggggggggggggggggggggggggggggggggggg answer (iceDone=" + config.iceDone + ")");
 			} else {
 				Janus.log("Creating answer (iceDone=" + config.iceDone + ", simulcast=" + simulcast + ")");
 			}
