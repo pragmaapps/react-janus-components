@@ -540,6 +540,10 @@ exports.mediaProperties = mediaProperties;
 
 // List of sessions
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4725,6 +4729,7 @@ function Janus(gatewayCallbacks) {
 		return trickle === false ? false : true;
 	}
 }
+exports.default = Janus;
 
 /***/ }),
 /* 13 */
@@ -20604,52 +20609,50 @@ var JanusComponent = function JanusComponent(_ref) {
     }, []);
 
     var handleConnection = function handleConnection() {
-        jQuery(function () {
-            _janus2.default.init({
-                debug: "all", callback: function callback() {
-                    if (!_janus2.default.isWebrtcSupported()) {
-                        console.log("No WebRTC support... ");
-                        return;
-                    }
-
-                    var turnServer = {};
-                    var turnServerStatus = isTurnServerEnabled;
-                    if (turnServerStatus) {
-                        console.log("inside session turn server");
-                        console.log("turn:" + daqIP + ":3478", 'url');
-                        turnServer.iceServers = [{ url: "turn:" + daqIP + ":3478", username: "janususer", credential: "januspwd" }];
-                        turnServer.iceTransportPolicy = 'relay';
-                    }
-
-                    var janus = new _janus2.default(_extends({
-                        server: server,
-
-                        // No "iceServers" is provided, meaning janus.js will use a default STUN server
-                        // Here are some examples of how an iceServers field may look like to support TURN
-                        // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-                        // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-                        // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-                        // Should the Janus API require authentication, you can specify either the API secret or user token here too
-                        //		token: "mytoken",
-                        //	or
-                        //		apisecret: "serversecret",
-                        success: function success() {
-                            // Attach to echo test plugin
-                            console.log("Janus loaded");
-                            // if (!unmounted) {
-                            setJanusInstance(janus);
-                            // }
-                        },
-                        error: function error(_error) {
-                            _janus2.default.error(_error);
-                            setJanusInstance(null);
-                        },
-                        destroyed: function destroyed() {
-                            setJanusInstance(null);
-                        }
-                    }, turnServer));
+        _janus2.default.init({
+            debug: "all", callback: function callback() {
+                if (!_janus2.default.isWebrtcSupported()) {
+                    console.log("No WebRTC support... ");
+                    return;
                 }
-            });
+
+                var turnServer = {};
+                var turnServerStatus = isTurnServerEnabled;
+                if (turnServerStatus) {
+                    console.log("inside session turn server");
+                    console.log("turn:" + daqIP + ":3478", 'url');
+                    turnServer.iceServers = [{ url: "turn:" + daqIP + ":3478", username: "janususer", credential: "januspwd" }];
+                    turnServer.iceTransportPolicy = 'relay';
+                }
+
+                var janus = new _janus2.default(_extends({
+                    server: server,
+
+                    // No "iceServers" is provided, meaning janus.js will use a default STUN server
+                    // Here are some examples of how an iceServers field may look like to support TURN
+                    // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
+                    // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+                    // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+                    // Should the Janus API require authentication, you can specify either the API secret or user token here too
+                    //		token: "mytoken",
+                    //	or
+                    //		apisecret: "serversecret",
+                    success: function success() {
+                        // Attach to echo test plugin
+                        console.log("Janus loaded");
+                        // if (!unmounted) {
+                        setJanusInstance(janus);
+                        // }
+                    },
+                    error: function error(_error) {
+                        _janus2.default.error(_error);
+                        setJanusInstance(null);
+                    },
+                    destroyed: function destroyed() {
+                        setJanusInstance(null);
+                    }
+                }, turnServer));
+            }
         });
     };
 

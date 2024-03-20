@@ -3197,3 +3197,4 @@ function Janus(gatewayCallbacks) {
 		return (trickle === false) ? false : true;
 	}
 }
+export default Janus;
