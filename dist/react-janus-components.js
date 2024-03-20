@@ -20604,50 +20604,52 @@ var JanusComponent = function JanusComponent(_ref) {
     }, []);
 
     var handleConnection = function handleConnection() {
-        _janus2.default.init({
-            debug: "all", callback: function callback() {
-                if (!_janus2.default.isWebrtcSupported()) {
-                    console.log("No WebRTC support... ");
-                    return;
-                }
-
-                var turnServer = {};
-                var turnServerStatus = isTurnServerEnabled;
-                if (turnServerStatus) {
-                    console.log("inside session turn server");
-                    console.log("turn:" + daqIP + ":3478", 'url');
-                    turnServer.iceServers = [{ url: "turn:" + daqIP + ":3478", username: "janususer", credential: "januspwd" }];
-                    turnServer.iceTransportPolicy = 'relay';
-                }
-
-                var janus = new _janus2.default(_extends({
-                    server: server,
-
-                    // No "iceServers" is provided, meaning janus.js will use a default STUN server
-                    // Here are some examples of how an iceServers field may look like to support TURN
-                    // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-                    // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-                    // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-                    // Should the Janus API require authentication, you can specify either the API secret or user token here too
-                    //		token: "mytoken",
-                    //	or
-                    //		apisecret: "serversecret",
-                    success: function success() {
-                        // Attach to echo test plugin
-                        console.log("Janus loaded");
-                        // if (!unmounted) {
-                        setJanusInstance(janus);
-                        // }
-                    },
-                    error: function error(_error) {
-                        _janus2.default.error(_error);
-                        setJanusInstance(null);
-                    },
-                    destroyed: function destroyed() {
-                        setJanusInstance(null);
+        jQuery(function () {
+            _janus2.default.init({
+                debug: "all", callback: function callback() {
+                    if (!_janus2.default.isWebrtcSupported()) {
+                        console.log("No WebRTC support... ");
+                        return;
                     }
-                }, turnServer));
-            }
+
+                    var turnServer = {};
+                    var turnServerStatus = isTurnServerEnabled;
+                    if (turnServerStatus) {
+                        console.log("inside session turn server");
+                        console.log("turn:" + daqIP + ":3478", 'url');
+                        turnServer.iceServers = [{ url: "turn:" + daqIP + ":3478", username: "janususer", credential: "januspwd" }];
+                        turnServer.iceTransportPolicy = 'relay';
+                    }
+
+                    var janus = new _janus2.default(_extends({
+                        server: server,
+
+                        // No "iceServers" is provided, meaning janus.js will use a default STUN server
+                        // Here are some examples of how an iceServers field may look like to support TURN
+                        // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
+                        // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+                        // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+                        // Should the Janus API require authentication, you can specify either the API secret or user token here too
+                        //		token: "mytoken",
+                        //	or
+                        //		apisecret: "serversecret",
+                        success: function success() {
+                            // Attach to echo test plugin
+                            console.log("Janus loaded");
+                            // if (!unmounted) {
+                            setJanusInstance(janus);
+                            // }
+                        },
+                        error: function error(_error) {
+                            _janus2.default.error(_error);
+                            setJanusInstance(null);
+                        },
+                        destroyed: function destroyed() {
+                            setJanusInstance(null);
+                        }
+                    }, turnServer));
+                }
+            });
         });
     };
 
