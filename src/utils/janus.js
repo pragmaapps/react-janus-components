@@ -1,5 +1,6 @@
 "use strict";
-
+import jQuery from 'jquery';
+import adapter from 'webrtc-adapter';
 /*
 	The MIT License (MIT)
 
