@@ -79,7 +79,7 @@ export function subscribeStreaming(janus, opaqueId, callback) {
 					streaming.hangup();							
 					return;
 				}
-				if(jsep !== undefined && jsep !== null) {
+				/*if(jsep !== undefined && jsep !== null) {
 					Janus.debug("Handling SDP as well...");
 					Janus.debug(jsep);
 					// Offer from the plugin, let's answer
@@ -92,6 +92,36 @@ export function subscribeStreaming(janus, opaqueId, callback) {
 								Janus.debug(jsep);
 								var body = { "request": "start" };
 								streaming.send({"message": body, "jsep": jsep});
+							},
+							error: function(error) {
+								Janus.error("WebRTC error:", error);
+							}
+						});
+				}*/
+				if(jsep) {
+					Janus.debug("Handling SDP as well...", jsep);
+					let stereo = (jsep.sdp.indexOf("stereo=1") !== -1);
+					// Offer from the plugin, let's answer
+					streaming.createAnswer(
+						{
+							jsep: jsep,
+							// We only specify data channels here, as this way in
+							// case they were offered we'll enable them. Since we
+							// don't mention audio or video tracks, we autoaccept them
+							// as recvonly (since we won't capture anything ourselves)
+							tracks: [
+								{ type: 'data' }
+							],
+							customizeSdp: function(jsep) {
+								if(stereo && jsep.sdp.indexOf("stereo=1") == -1) {
+									// Make sure that our offer contains stereo too
+									jsep.sdp = jsep.sdp.replace("useinbandfec=1", "useinbandfec=1;stereo=1");
+								}
+							},
+							success: function(jsep) {
+								Janus.debug("Got SDP!", jsep);
+								let body = { request: "start" };
+								streaming.send({ message: body, jsep: jsep });
 							},
 							error: function(error) {
 								Janus.error("WebRTC error:", error);

@@ -26642,18 +26642,46 @@ function subscribeStreaming(janus, opaqueId, callback) {
 				streaming.hangup();
 				return;
 			}
-			if (jsep !== undefined && jsep !== null) {
-				_janus2.default.debug("Handling SDP as well...");
-				_janus2.default.debug(jsep);
+			/*if(jsep !== undefined && jsep !== null) {
+   	Janus.debug("Handling SDP as well...");
+   	Janus.debug(jsep);
+   	// Offer from the plugin, let's answer
+   	streaming.createAnswer(
+   		{
+   			jsep: jsep,
+   			media: { audioSend: false, videoSend: false },	// We want recvonly audio/video
+   			success: function(jsep) {
+   				Janus.debug("Got SDP!");
+   				Janus.debug(jsep);
+   				var body = { "request": "start" };
+   				streaming.send({"message": body, "jsep": jsep});
+   			},
+   			error: function(error) {
+   				Janus.error("WebRTC error:", error);
+   			}
+   		});
+   }*/
+			if (jsep) {
+				_janus2.default.debug("Handling SDP as well...", jsep);
+				var stereo = jsep.sdp.indexOf("stereo=1") !== -1;
 				// Offer from the plugin, let's answer
 				streaming.createAnswer({
 					jsep: jsep,
-					media: { audioSend: false, videoSend: false }, // We want recvonly audio/video
+					// We only specify data channels here, as this way in
+					// case they were offered we'll enable them. Since we
+					// don't mention audio or video tracks, we autoaccept them
+					// as recvonly (since we won't capture anything ourselves)
+					tracks: [{ type: 'data' }],
+					customizeSdp: function customizeSdp(jsep) {
+						if (stereo && jsep.sdp.indexOf("stereo=1") == -1) {
+							// Make sure that our offer contains stereo too
+							jsep.sdp = jsep.sdp.replace("useinbandfec=1", "useinbandfec=1;stereo=1");
+						}
+					},
 					success: function success(jsep) {
-						_janus2.default.debug("Got SDP!");
-						_janus2.default.debug(jsep);
-						var body = { "request": "start" };
-						streaming.send({ "message": body, "jsep": jsep });
+						_janus2.default.debug("Got SDP!", jsep);
+						var body = { request: "start" };
+						streaming.send({ message: body, jsep: jsep });
 					},
 					error: function error(_error2) {
 						_janus2.default.error("WebRTC error:", _error2);
