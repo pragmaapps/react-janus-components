@@ -1982,7 +1982,7 @@ function Janus(gatewayCallbacks) {
 			};
 			event.track.onmute = function(ev) {
 				Janus.log('Remote track muted:', ev);
-				if(!trackMutedTimeoutId) {
+				/*if(!trackMutedTimeoutId) {
 					trackMutedTimeoutId = setTimeout(function() {
 						Janus.log('Removing remote track');
 						// Notify the application the track is gone
@@ -2001,7 +2001,7 @@ function Janus(gatewayCallbacks) {
 					// Chrome seems to raise mute events only at multiples of 834ms;
 					// we set the timeout to three times this value (rounded to 840ms)
 					}, 3 * 840);
-				}
+				}*/
 			};
 			event.track.onunmute = function(ev) {
 				Janus.log('Remote track flowing again:', ev);
