@@ -17,6 +17,7 @@
     "react-dom": "^16.13.1"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "jquery": "^3.4.1",
     "video-react": "^0.14.1",
     "webrtc-adapter": "^7.2.9"
