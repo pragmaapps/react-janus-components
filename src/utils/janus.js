@@ -1982,18 +1982,18 @@ function Janus(gatewayCallbacks) {
 			};
 			event.track.onmute = function(ev) {
 				Janus.log('Remote track muted:', ev);
-				/*if(!trackMutedTimeoutId) {
+				if(!trackMutedTimeoutId) {
 					trackMutedTimeoutId = setTimeout(function() {
-						Janus.log('Removing remote track');
+						//Janus.log('Removing remote track');
 						// Notify the application the track is gone
 						let transceivers = config.pc ? config.pc.getTransceivers() : null;
 						let transceiver = transceivers ? transceivers.find(
 							t => t.receiver.track === ev.target) : null;
 						let mid = transceiver ? transceiver.mid : ev.target.id;
 						if(mid === ev.target.id && pluginHandle.mids && pluginHandle.mids[event.track.id])
-							mid = pluginHandle.mids[event.track.id];
+							//mid = pluginHandle.mids[event.track.id];
 						try {
-							pluginHandle.onremotetrack(ev.target, mid, false, { reason: 'mute' } );
+							//pluginHandle.onremotetrack(ev.target, mid, false, { reason: 'mute' } );
 						} catch(e) {
 							Janus.error("Error calling onremotetrack on mute", e);
 						}
@@ -2001,7 +2001,7 @@ function Janus(gatewayCallbacks) {
 					// Chrome seems to raise mute events only at multiples of 834ms;
 					// we set the timeout to three times this value (rounded to 840ms)
 					}, 3 * 840);
-				}*/
+				}
 			};
 			event.track.onunmute = function(ev) {
 				Janus.log('Remote track flowing again:', ev);
@@ -2015,7 +2015,7 @@ function Janus(gatewayCallbacks) {
 						let transceiver = transceivers ? transceivers.find(
 							t => t.receiver.track === ev.target) : null;
 						let mid = transceiver ? transceiver.mid : ev.target.id;
-						pluginHandle.onremotetrack(ev.target, mid, true, { reason: 'unmute' });
+						//pluginHandle.onremotetrack(ev.target, mid, true, { reason: 'unmute' });
 					} catch(e) {
 						Janus.error("Error calling onremotetrack on unmute", e);
 					}
