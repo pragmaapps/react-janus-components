@@ -25840,8 +25840,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _react = __webpack_require__(2);
@@ -25878,40 +25876,17 @@ var JanusComponent = function JanusComponent(_ref) {
     }, []);
 
     var handleConnection = function handleConnection() {
-        _janus2.default.init({
-            debug: "all", callback: function callback() {
+        _janus2.default.init({ debug: "all", callback: function callback() {
                 if (!_janus2.default.isWebrtcSupported()) {
                     console.log("No WebRTC support... ");
                     return;
                 }
-
-                var turnServer = {};
-                var turnServerStatus = isTurnServerEnabled;
-                if (turnServerStatus) {
-                    console.log("inside session turn server");
-                    console.log("turn:" + daqIP + ":3478", 'url');
-                    turnServer.iceServers = [{ url: "turn:" + daqIP + ":3478", username: "janususer", credential: "januspwd" }];
-                    turnServer.iceTransportPolicy = 'relay';
-                }
-
-                var janus = new _janus2.default(_extends({
+                var janus = new _janus2.default({
                     server: server,
-
-                    // No "iceServers" is provided, meaning janus.js will use a default STUN server
-                    // Here are some examples of how an iceServers field may look like to support TURN
-                    // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-                    // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-                    // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-                    // Should the Janus API require authentication, you can specify either the API secret or user token here too
-                    //		token: "mytoken",
-                    //	or
-                    //		apisecret: "serversecret",
+                    iceServers: null,
                     success: function success() {
-                        // Attach to echo test plugin
-                        console.log("Janus loaded");
-                        // if (!unmounted) {
+                        _janus2.default.log("[Janus componet]:Janus connection initiated.");
                         setJanusInstance(janus);
-                        // }
                     },
                     error: function error(_error) {
                         _janus2.default.error(_error);
@@ -25920,7 +25895,7 @@ var JanusComponent = function JanusComponent(_ref) {
                     destroyed: function destroyed() {
                         setJanusInstance(null);
                     }
-                }, turnServer));
+                });
             }
         });
     };
@@ -26310,14 +26285,13 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
     };
 
     var handlePlayEvent = function handlePlayEvent(e) {
-        // console.log(e, "playing");
+        console.log(e, "playing");
     };
     var streamingCallback = function streamingCallback(_streaming, eventType, data) {
         setStreaming(_streaming);
         if (eventType === "onremotestream" && videoArea.current !== null) {
             mystream = data;
-
-            console.log("[Attaching stream to the video element:]", videoArea);
+            console.log("[janus streamer component]: Attaching stream to the video element:", videoArea);
             var videoPlayer = videoArea.current.video.video;
             _janus2.default.attachMediaStream(videoPlayer, mystream);
             videoPlayer.addEventListener('error', handleErrorVideo);
@@ -26573,26 +26547,26 @@ function startStream(streaming, selectedStream) {
 	if (selectedStream === undefined || selectedStream === null) {
 		return;
 	}
-	var body = { "request": "watch", id: parseInt(selectedStream) };
+	var body = { request: "watch", id: parseInt(selectedStream) };
 	streaming.send({ "message": body });
 	// No remote video yet
 }
 
 function subscribeStreaming(janus, opaqueId, callback) {
 	var streaming = null;
-
+	var stropaqueId = "streaming-" + _janus2.default.randomString(12);
 	janus.attach({
 		plugin: "janus.plugin.streaming",
-		opaqueId: opaqueId,
+		opaqueId: stropaqueId,
 		success: function success(pluginHandle) {
 			streaming = pluginHandle;
 			_janus2.default.log("Plugin attached! (" + streaming.getPlugin() + ", id=" + streaming.getId() + ")");
 			// Setup streaming session
 			// $('#update-streams').click(updateStreamsList);
 
-			var body = { "request": "list" };
+			var body = { request: "list" };
 			_janus2.default.debug("Sending message (" + JSON.stringify(body) + ")");
-			streaming.send({ "message": body, success: function success(result) {
+			streaming.send({ message: body, success: function success(result) {
 					if (result["list"] !== undefined && result["list"] !== null) {
 						var list = result["list"];
 						_janus2.default.log("Got a list of available streams");
@@ -26608,59 +26582,59 @@ function subscribeStreaming(janus, opaqueId, callback) {
 			_janus2.default.error("  -- Error attaching plugin...", _error);
 			callback(streaming, "error", _error);
 		},
+		iceState: function iceState(state) {
+			_janus2.default.log("ICE state changed to " + state);
+		},
+		webrtcState: function webrtcState(on) {
+			_janus2.default.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
+		},
+		slowLink: function slowLink(uplink, lost, mid) {
+			_janus2.default.warn("Janus reports problems " + (uplink ? "sending" : "receiving") + " packets on mid " + mid + " (" + lost + " lost packets)");
+		},
 		onmessage: function onmessage(msg, jsep) {
-			_janus2.default.debug(" ::: Got a message :::");
-			_janus2.default.debug(msg);
+			_janus2.default.debug(" ::: Got a message :::", msg);
 			var result = msg["result"];
-			if (result !== null && result !== undefined) {
-				if (result["status"] !== undefined && result["status"] !== null) {
+			if (result) {
+				if (result["status"]) {
 					var status = result["status"];
 					if (status === 'starting') callback(streaming, "starting");else if (status === 'started') callback(streaming, "started");else if (status === 'stopped') {
-						var body = { "request": "stop" };
-						streaming.send({ "message": body });
+						var body = { request: "stop" };
+						streaming.send({ message: body });
 						streaming.hangup();
 					}
 				} else if (msg["streaming"] === "event") {
+					// Does this event refer to a mid in particular?
+					var mid = result["mid"] ? result["mid"] : "0";
 					// Is simulcast in place?
 					var substream = result["substream"];
 					var temporal = result["temporal"];
 					if (substream !== null && substream !== undefined || temporal !== null && temporal !== undefined) {
+						if (!simulcastStarted[mid]) {
+							simulcastStarted[mid] = true;
+							callback(streaming, "addsimulcastStarted");
+						}
 						// We just received notice that there's been a switch, update the buttons
-						callback(streaming, "simulcastStarted");
+						callback(streaming, "updatesimulcastStarted");
 					}
 					// Is VP9/SVC in place?
 					var spatial = result["spatial_layer"];
 					temporal = result["temporal_layer"];
 					if (spatial !== null && spatial !== undefined || temporal !== null && temporal !== undefined) {
+						if (!svcStarted[mid]) {
+							svcStarted[mid] = true;
+							callback(streaming, "addsvcStarted");
+						}
 						// We just received notice that there's been a switch, update the buttons
-						callback(streaming, "svcStarted");
+						callback(streaming, "updatesvcStarted");
 					}
 				}
-			} else if (msg["error"] !== undefined && msg["error"] !== null) {
-				var body = { "request": "stop" };
-				streaming.send({ "message": body });
+			} else if (msg["error"]) {
+				_janus2.default.error(msg["error"]);
+				var _body = { request: "stop" };
+				streaming.send({ message: _body });
 				streaming.hangup();
 				return;
 			}
-			/*if(jsep !== undefined && jsep !== null) {
-   	Janus.debug("Handling SDP as well...");
-   	Janus.debug(jsep);
-   	// Offer from the plugin, let's answer
-   	streaming.createAnswer(
-   		{
-   			jsep: jsep,
-   			media: { audioSend: false, videoSend: false },	// We want recvonly audio/video
-   			success: function(jsep) {
-   				Janus.debug("Got SDP!");
-   				Janus.debug(jsep);
-   				var body = { "request": "start" };
-   				streaming.send({"message": body, "jsep": jsep});
-   			},
-   			error: function(error) {
-   				Janus.error("WebRTC error:", error);
-   			}
-   		});
-   }*/
 			if (jsep) {
 				_janus2.default.debug("Handling SDP as well...", jsep);
 				var stereo = jsep.sdp.indexOf("stereo=1") !== -1;
@@ -26689,8 +26663,34 @@ function subscribeStreaming(janus, opaqueId, callback) {
 				});
 			}
 		},
-		onremotestream: function onremotestream(stream) {
-			callback(streaming, "onremotestream", stream);
+		onremotetrack: function onremotetrack(track, mid, on, metadata) {
+			_janus2.default.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + (metadata ? " (" + metadata.reason + ") " : "") + ":", track);
+			var mstreamId = "mstream" + mid;
+
+			if (!on) {
+				_janus2.default.log("[janus streaming util]: stream is not on, returing.");
+				return;
+			}
+			// If we're here, a new track was added
+			var stream = null;
+			if (track.kind === "audio") {
+				// New audio track: create a stream out of it, and use a hidden <audio> element
+				stream = new MediaStream([track]);
+				_janus2.default.log("Created remote audio stream:", stream);
+			} else {
+				// New video track: create a stream out of it
+				stream = new MediaStream([track]);
+				_janus2.default.log("Created remote video stream:", stream);
+				callback(streaming, "onremotestream", stream);
+			}
+		},
+		ondataopen: function ondataopen(label, protocol) {
+			_janus2.default.log("The DataChannel is available!");
+			callback(streaming, "ondataopen", label);
+		},
+		ondata: function ondata(data) {
+			_janus2.default.debug("We got data from the DataChannel!", data);
+			callback(streaming, "ondata", data);
 		},
 		oncleanup: function oncleanup() {
 			callback(streaming, "oncleanup");
