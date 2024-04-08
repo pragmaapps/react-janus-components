@@ -21,6 +21,62 @@ const JanusStreamPlayer = React.forwardRef((
         showFramesRate,
         playPauseButton
     }, ref ) => {
+    const newShortcuts = [
+            {
+              keyCode: 32, // spacebar
+              handle: ()=>{}
+            },
+            {
+              keyCode: 75, // k
+              handle: ()=>{}
+            },
+            {
+              keyCode: 70, // f
+              handle: ()=>{}
+            },
+            {
+              keyCode: 37, // Left arrow
+              handle: ()=>{}
+            },
+            {
+              keyCode: 74, // j
+              handle: ()=>{}
+            },
+            {
+              keyCode: 39, // Right arrow
+              handle: ()=>{}
+            },
+            {
+              keyCode: 76, // l
+              handle: ()=>{}
+            },
+            {
+              keyCode: 36, // Home
+              handle: ()=>{}
+            },
+            {
+              keyCode: 35, // End
+              handle: ()=>{}
+            },
+            {
+              keyCode: 38, // Up arrow
+              handle: ()=>{}
+            },
+            {
+              keyCode: 40, // Down arrow
+              handle: ()=>{}
+            },
+            {
+              keyCode: 190, // Shift + >
+              shift: true,
+              handle: ()=>{}
+            },
+            {
+              keyCode: 188, // Shift + <
+              shift: true,
+              handle: ()=>{}
+            }
+          ];
     return (
         <div className="janus-video-container">
             {/*<div className="janus-video-status">
@@ -59,7 +115,7 @@ const JanusStreamPlayer = React.forwardRef((
                         <ControlBar disableCompletely={true} />
                     )
                 }
-                <Shortcut clickable={playPauseButton===undefined ? false : playPauseButton} />
+                <Shortcut clickable={playPauseButton===undefined ? false : playPauseButton} shortcuts={newShortcuts} dblclickable={playPauseButton===undefined ? false : playPauseButton} />
             </Player>
             {isPublisher && (
                 <div className="janus-video-controls">
