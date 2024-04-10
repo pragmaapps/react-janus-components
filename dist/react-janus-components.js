@@ -26315,10 +26315,10 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
             (0, _streaming2.startStream)(_streaming, streamId);
         }
     };
+    var bitrates = null;
     if (streaming) {
-        setJanusBitrate(streaming.getBitrate());
+        bitrates = streaming.getBitrate();
     };
-    var bitrates = janusBitrate;
     console.log("bit rate coming>>>", bitrates);
     return _react2.default.createElement(
         'div',

@@ -69,10 +69,10 @@ const JanusStreamer = React.forwardRef((
         }
 
     }
+    let bitrates = null;
     if(streaming){
-        setJanusBitrate(streaming.getBitrate());
+        bitrates = streaming.getBitrate();
     };
-    const bitrates = janusBitrate;
     console.log("bit rate coming>>>", bitrates);
     return (
         <div>
