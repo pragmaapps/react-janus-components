@@ -26305,6 +26305,7 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
             }
             console.log("[Attached video stream bitrate :]", _streaming.getBitrate());
             setJanusBitrate(_streaming.getBitrate());
+            console.log("bit rate from state>>>", janusBitrate);
         } else if (eventType === "oncleanup") {
             setPlayerState("Paused");
         } else if (eventType === "error") {
@@ -26315,6 +26316,7 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
         }
     };
     var bitrates = streaming && streaming.webrtcStuff && streaming.webrtcStuff.bitrate ? streaming.webrtcStuff.bitrate.value : janusBitrate;
+    console.log("bit rate coming>>>", bitrates);
     return _react2.default.createElement(
         'div',
         null,
