@@ -70,9 +70,11 @@ const JanusStreamer = React.forwardRef((
 
     }
     const bitrates = streaming && streaming.webrtcStuff && streaming.webrtcStuff.bitrate ? streaming.webrtcStuff.bitrate.value :  janusBitrate;
-    let strbit = streaming.getBitrate();
-    console.log("streaming object", streaming);
-    console.log("bit rate coming from str bit>>>", strbit);
+    if(streaming){
+        let strbit = streaming.getBitrate();
+        console.log("streaming object", streaming);
+        console.log("bit rate coming from str bit>>>", strbit);
+    };
     console.log("bit rate coming>>>", bitrates);
     return (
         <div>

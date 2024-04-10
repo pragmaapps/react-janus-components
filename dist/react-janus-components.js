@@ -26316,9 +26316,11 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
         }
     };
     var bitrates = streaming && streaming.webrtcStuff && streaming.webrtcStuff.bitrate ? streaming.webrtcStuff.bitrate.value : janusBitrate;
-    var strbit = streaming.getBitrate();
-    console.log("streaming object", streaming);
-    console.log("bit rate coming from str bit>>>", strbit);
+    if (streaming) {
+        var strbit = streaming.getBitrate();
+        console.log("streaming object", streaming);
+        console.log("bit rate coming from str bit>>>", strbit);
+    };
     console.log("bit rate coming>>>", bitrates);
     return _react2.default.createElement(
         'div',
