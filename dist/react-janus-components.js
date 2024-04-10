@@ -26315,7 +26315,7 @@ var JanusStreamer = _react2.default.forwardRef(function (_ref, ref) {
             (0, _streaming2.startStream)(_streaming, streamId);
         }
     };
-    var bitrates = streaming && streaming.webrtcStuff && streaming.webrtcStuff.bitrate ? streaming.webrtcStuff.bitrate.value : janusBitrate;
+    var bitrates = streaming && streaming.webrtcStuff && streaming.webrtcStuff.bitrate ? janusBitrate : janusBitrate;
     if (streaming) {
         var strbit = streaming.getBitrate();
         console.log("streaming object", streaming);
