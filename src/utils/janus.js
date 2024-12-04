@@ -721,6 +721,7 @@ function Janus(gatewayCallbacks) {
 		if(json["janus"] === "keepalive") {
 			// Nothing happened
 			Janus.vdebug("Got a keepalive on session " + sessionId);
+			console.log("Got a keepalive on session by vivek logs " + sessionId);
 			return;
 		} else if(json["janus"] === "server_info") {
 			// Just info on the Janus instance
