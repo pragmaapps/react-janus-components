@@ -690,7 +690,14 @@ function Janus(gatewayCallbacks) {
 		Janus.httpAPICall(longpoll, {
 			verb: 'GET',
 			withCredentials: withCredentials,
-			success: handleEvent,
+			success: function(response) {
+           			 handleEvent(response);
+
+            			// Stop the browser spinner after the first successful response
+            				if (typeof window.stop === 'function') {
+                				window.stop();
+            				}
+        		},
 			timeout: longPollTimeout,
 			error: function(textStatus, errorThrown) {
 				Janus.error(textStatus + ":", errorThrown);
