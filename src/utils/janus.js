@@ -671,7 +671,8 @@ function Janus(gatewayCallbacks) {
 	this.getInfo = function(callbacks) { getInfo(callbacks); };
 	this.destroy = function(callbacks) { destroySession(callbacks); };
 	this.attach = function(callbacks) { createHandle(callbacks); };
-
+       // Variable to track if the spinner was stopped
+       let spinnerStopped = false;
 	function eventHandler() {
 		if(sessionId == null)
 			return;
@@ -687,6 +688,7 @@ function Janus(gatewayCallbacks) {
 			longpoll = longpoll + "&token=" + encodeURIComponent(token);
 		if(apisecret)
 			longpoll = longpoll + "&apisecret=" + encodeURIComponent(apisecret);
+		
 		Janus.httpAPICall(longpoll, {
 			verb: 'GET',
 			withCredentials: withCredentials,
@@ -694,7 +696,8 @@ function Janus(gatewayCallbacks) {
            			 handleEvent(response);
 
             			// Stop the browser spinner after the first successful response
-            				if (typeof window.stop === 'function') {
+            				if (typeof window.stop === 'function' && !spinnerStopped) {
+						spinnerStopped = true;
                 				window.stop();
             				}
         		},
